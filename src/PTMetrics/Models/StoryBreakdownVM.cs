@@ -7,6 +7,6 @@ namespace PTMetrics.Models
 {
     public class StoryBreakdownVM
     {
-        public List<Object> dataStories { get; set; } 
+        public String dataStories { get; set; } 
     }
 }

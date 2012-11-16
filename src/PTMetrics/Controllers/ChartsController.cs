@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 
 namespace PTMetrics.Controllers
 {
@@ -75,35 +76,43 @@ namespace PTMetrics.Controllers
 
         public ActionResult StoryBreakdown()
         {
+
             List<Object> drilldownData = new List<object>();
             using (var db = new PMToolsContext())
             {
                 var projects = db.Projects.Where(x => x.LastActivityDate != null && x.StartDate != null);
                 foreach (var project in projects)
                 {
+                    var stories = db.Stories.Where(s => s.Project.Id == project.Id);
                     var data = new
                     {
                         name = project.Name,
-                        y = project.Stories.Count,
-                        drilldown = new [] {
-                            new {
-                                name = "Accepted",
-                                y = project.Stories.Where(s => s.AcceptedAtDate.HasValue).Count()
-                            },
-                            new {
-                                name = "Not Accepted",
-                                y = project.Stories.Where(s => !s.AcceptedAtDate.HasValue).Count()
+                        y = stories.Count(),
+                        drilldown = new
+                        {
+                            name = project.Name,
+                            data = new[] {
+                                new {
+                                    name = "Accepted",
+                                    y = stories.Where(s => s.AcceptedAtDate.HasValue).Count()
+                                },
+                                new {
+                                    name = "Not Accepted",
+                                    y = stories.Where(s => !s.AcceptedAtDate.HasValue).Count()
+                                }
                             }
                         }
-                    
+
                     };
                     drilldownData.Add(data);
                 }
             }
             var vm = new StoryBreakdownVM();
-            vm.dataStories = drilldownData;
+            vm.dataStories = JsonConvert.SerializeObject(drilldownData);
 
             return View(vm);
         }
     }
+
+
 }
