@@ -1,0 +1,1 @@
+If you have any tools that need to be available for the build server or things that need to be run on a developer machine before using the solution, put them into this folder and add instructions to this document.
