@@ -94,11 +94,13 @@ namespace PTMetrics.Controllers
                             data = new[] {
                                 new {
                                     name = "Accepted",
-                                    y = stories.Where(s => s.AcceptedAtDate.HasValue).Count()
+                                    y = stories.Where(s => s.AcceptedAtDate.HasValue).Count(),
+                                    color = "#458B00"
                                 },
                                 new {
                                     name = "Not Accepted",
-                                    y = stories.Where(s => !s.AcceptedAtDate.HasValue).Count()
+                                    y = stories.Where(s => !s.AcceptedAtDate.HasValue).Count(),
+                                    color = "#FCDC3B"
                                 }
                             }
                         }
