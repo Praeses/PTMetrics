@@ -8,5 +8,6 @@ namespace PTMetrics.Models
     public class ProjectTimelineVM
     {
         public string Categories { get; set; }  // Should look like 'cat1', 'cat2', cat3'
+        public string Data { get; set;} 
     }
 }
