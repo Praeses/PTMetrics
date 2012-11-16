@@ -1,0 +1,1 @@
+If you have any project documents add them to this folder so that they'll be avialable for future projects.

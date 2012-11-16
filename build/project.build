@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<!-- Setup variables to our MSBuild community tasks and to our solutions to be built. -->
+		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\MSBuild.Community.Tasks\Build</MSBuildCommunityTasksPath> 
+		<MSBuildExtensionPackTasksPath>$(MSBuildProjectDirectory)\tools\MSBuild.ExtensionPack</MSBuildExtensionPackTasksPath>
+		
+		<SolutionFile>..\src\Project.sln</SolutionFile>
+		
+		<!-- Setup Environment and Configuration... sensible defaults if nothing was set.  Assume development.-->
+		<Environment Condition="'$(Environment)' == ''">Development</Environment>
+		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+		
+		<!-- Setup some additional variables to make variable conditions later in the build file a little easier to work with. -->
+		<WorkingRootDir Condition="'$(WorkingRootDir)' == ''">$(MSBuildProjectDirectory)\temp\$(Environment)</WorkingRootDir>
+	</PropertyGroup>
+	
+	<!-- Import the extra community tasks/targets so that we can use them in our build. -->
+	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+	<Import Project="$(MSBuildExtensionPackTasksPath)\MSBuild.ExtensionPack.tasks"/>
+	
+	<!--
+		You can specify any target really, but I want this to work like Maven where you 
+		do things sequentially by specifying the last target.
+
+		1.  validate:          Ensures that you run this file with a proper Configuration.  The default passes this condition.
+    2.  compile:           Cleans the solution, versions the build, and compiles the solution.
+    3.  unit-test:         Runs the UNIT tests in the solution.
+    4.  integration-test:  Run the Integration tests in ths solution.
+    5.  package:           Packages the build so that it can be deployed.
+    6.  deploy:            Deploys the solution to a location.
+	-->
+	<Target Name="validate">
+		<Message Text="****************** Running target: validate ******************" />
+		<Message Text="MSBuildCommunityTasksPath:      $(MSBuildCommunityTasksPath)" />
+    <Message Text="MSBuildExtensionPackTasksPath:  $(MSBuildExtensionPackTasksPath)" />
+		<Message Text="SolutionFile:                   $(SolutionFile)" />
+		<Message Text="Environment:                    $(Environment)" />
+		<Message Text="Configuration:                  $(Configuration)" />
+		<Message Text="WorkingRootDir:                 $(WorkingRootDir)" />
+		
+		<Error Text="The Configuration property is required. Options: 'Debug' 'Release'." Condition="'$(Configuration)'!='Debug' AND '$(Configuration)'!='Release'"/>
+	</Target>
+	
+  <Target Name="compile" DependsOnTargets="validate">
+    <Message Text="****************** Running target: compile ******************" />
+    
+    <!-- Clean the solution just in case -->
+    <MSBuild Projects="$(SolutionFile)"  Properties="Configuration=$(Configuration)" Targets="Clean" />
+  
+    <!-- Get a build version -->
+    <Version BuildType="Automatic" RevisionType="Automatic" Major="1" Minor="0" >
+			<Output TaskParameter="Major" PropertyName="Major" />
+			<Output TaskParameter="Minor" PropertyName="Minor" />
+			<Output TaskParameter="Build" PropertyName="Build" />
+			<Output TaskParameter="Revision" PropertyName="Revision" />
+		</Version>
+    <BuildVersion>$(Major).$(Minor).$(Build).$(Revision)</BuildVersion>
+    <WorkingDirectory>$(WorkingRootDir)\$(Environment)\$(BUILD_NUMBER)</WorkingDirectory>
+		<Message Text="BuildVersion:     $(BuildVersion)" />
+    <Message Text="WorkingDirectory: $(WorkingDirectory)" />
+  
+    <!-- Create a GlobalAssemblyVersion file in the solution, so that when we compile all assemblies have the same build number. -->
+    <AssemblyInfo 	
+        CodeLanguage="CS"  
+				OutputFile="$(MSBuildProjectDirectory)\..\src\GlobalAssemblyInfo.cs" 
+				AssemblyVersion="$(BUILD_NUMBER)" />
+  
+    <!-- Build the solution -->
+    <MSBuild Projects="$(SolutionFile)" Properties="Configuration=$(Configuration)"/>
+  </Target>
+  
+	<Target Name="unit-test" DependsOnTargets="compile">
+		<Message Text="****************** Running target: unit-test ******************" />
+    
+		<ItemGroup>
+			<TestAssembly Include="..\src\*.Unit.Tests\bin\$(Configuration)\*.Unit.Tests.dll" />
+		</ItemGroup>
+		<PropertyGroup>
+			<NUnitToolsPath>C:\Program Files (x86)\NUnit 2.6.2\bin\</NUnitToolsPath>
+		</PropertyGroup>
+		<NUnit Assemblies="@(TestAssembly)" ToolPath="$(NUnitToolsPath)" />
+	</Target>
+  
+  <Target Name="integration-test" DependsOnTargets="unit-test">
+		<Message Text="****************** Running target: integration-test ******************" />
+    
+		<ItemGroup>
+			<TestAssembly Include="..\src\*.Integration.Tests\bin\$(Configuration)\*.Integration.Tests.dll" />
+		</ItemGroup>
+		<PropertyGroup>
+			<NUnitToolsPath>C:\Program Files (x86)\NUnit 2.6.2\bin\</NUnitToolsPath>
+		</PropertyGroup>
+		<NUnit Assemblies="@(TestAssembly)" ToolPath="$(NUnitToolsPath)" />
+	</Target>
+  
+  <Target Name="package" DependsOnTargets="integration-test">
+    <Message Text="****************** Running target: package ******************" />
+    <!--
+      Zip the output?
+    -->
+  </Target>
+  
+  <Target Name="deploy" DependsOnTargets="package">
+    <Message Text="****************** Running target: deploy ******************" />
+    <!--
+      Deploy to IIS on a server?
+    
+      Install any services that need to be deployed?
+    -->
+  </Target>
+	
+</Project>

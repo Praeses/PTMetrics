@@ -1,0 +1,1 @@
+Any build scripts for the build server should be placed in this folder along with anything else that needs to accompany them.
