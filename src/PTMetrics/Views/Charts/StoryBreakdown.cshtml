@@ -1,4 +1,4 @@
-﻿@model dynamic
+﻿@model PTMetrics.Models.StoryBreakdownVM
 
 @{
     ViewBag.Title = "title";
@@ -14,47 +14,7 @@
     <script type="text/javascript">
         $(function () {
             var chart,
-                drilldata = [
-                        {
-                            name: 'A',
-                            y: 15,
-                            drilldown: {
-                                name: 'A',
-                                data: [
-                                    { name: 'A1', y: 5 }
-                                    , { name: 'A2', y: 6 }
-                                    , { name: 'A3', y: 7 }
-                                    , { name: 'A4', y: 8 }
-                                ]
-                            }
-                        },
-                        {
-                            name: 'B',
-                            y: 10,
-                            drilldown: {
-                                name: 'B',
-                                data: [
-                                    { name: 'B1', y: 8 }
-                                    , { name: 'B2', y: 9 }
-                                    , { name: 'B3', y: 2 }
-                                    , { name: 'B4', y: 1 }
-                                ]
-                            }
-                        },
-                        {
-                            name: 'C',
-                            y: 5,
-                            drilldown: {
-                                name: 'C',
-                                data: [
-                                    { name: 'C1', y: 10 }
-                                    , { name: 'C2', y: 3 }
-                                    , { name: 'C3', y: 2 }
-                                    , { name: 'C4', y: 7 }
-                                ]
-                            }
-                        },
-            ];
+                drilldata = @Model.dataStories;
     
             $(document).ready(function () {
 

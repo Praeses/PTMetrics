@@ -39,7 +39,36 @@ namespace PTMetrics.Controllers
 
         public ActionResult StoryBreakdown()
         {
-            return View();
+            List<Object> drilldownData = new List<object>();
+            using (var db = new PMToolsContext())
+            {
+                var projects = db.Projects.Where(x => x.LastActivityDate != null && x.StartDate != null);
+                foreach (var project in projects)
+                {
+
+                    var data = new
+                    {
+                        name = project.Name,
+                        y = project.Stories.Count,
+                        drilldown = new [] {
+                            new {
+                                name = "Accepted",
+                                y = project.Stories.Where(s => s.AcceptedAtDate.HasValue).Count()
+                            },
+                            new {
+                                name = "Not Accepted",
+                                y = project.Stories.Where(s => !s.AcceptedAtDate.HasValue).Count()
+                            }
+                        }
+                    
+                    };
+                    drilldownData.Add(data);
+                }
+            }
+            var vm = new StoryBreakdownVM();
+            vm.dataStories = drilldownData;
+
+            return View(vm);
         }
 
     }
