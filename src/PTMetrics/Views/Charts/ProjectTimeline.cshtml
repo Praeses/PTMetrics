@@ -29,7 +29,7 @@
 
                 xAxis: {
                     // TODO - ajax pull the project names from the database.
-                    categories: ['CPMS Phase 3', 'OLTS', 'QIS Phase I'] //[@Model.Categories]  
+                    categories: @Html.Raw("[" + Model.Categories + "]")  //['CPMS Phase 3', 'OLTS', 'QIS Phase I'] 
                 },
 
                 yAxis: {
@@ -74,9 +74,10 @@
                     name: 'Date Range',
                     // TODO: Pull these dates dynamically
                     data: [
-                        [Date.UTC(2012, 3, 12), Date.UTC(2012, 8, 28)],
-                        [Date.UTC(2012, 6, 11), Date.UTC(2012, 11, 2)],
-                        [Date.UTC(2012, 10, 22), Date.UTC(2012, 11, 15)]
+                        @Html.Raw(Model.Data)
+                        //[Date.UTC(2012, 3, 12), Date.UTC(2012, 8, 28)],
+                        //[Date.UTC(2012, 6, 11), Date.UTC(2012, 11, 2)],
+                        //[Date.UTC(2012, 10, 22), Date.UTC(2012, 11, 15)]
                     ]
                 }]
             });

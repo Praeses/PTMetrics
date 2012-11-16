@@ -21,6 +21,19 @@ namespace PTMetrics.Controllers
 
         public ActionResult ProjectTimeline()
         {
+            var categories = this.GetCategories();
+            var data = this.GetData();
+
+
+            var vm = new ProjectTimelineVM();
+            vm.Categories = categories;
+            vm.Data = data;
+
+            return View(vm);
+        }
+
+        private string GetCategories()
+        {
             var categories = "";
             using (var db = new PMToolsContext())
             {
@@ -29,13 +42,35 @@ namespace PTMetrics.Controllers
                 {
                     categories += "'" + project.Name + "',";
                 }
-                categories = categories.Remove(categories.Length-2, 1);
+                categories = categories.Remove(categories.Length - 1, 1); // chop off last comma.
             }
-            var vm = new ProjectTimelineVM();
-            vm.Categories = categories;
-
-            return View(vm);
+            return categories;
         }
 
+        private string GetData()
+        {
+            var data = "";
+            using (var db = new PMToolsContext())
+            {
+                var projects = db.Projects.Where(x => x.LastActivityDate != null && x.StartDate != null);
+                foreach (var project in projects)
+                {
+                    string dataPointFormat = "[Date.UTC({0}, {1}, {2}), Date.UTC({3}, {4}, {5})],";
+                    var dataPoint = string.Format(
+                        dataPointFormat,
+                        project.StartDate.Value.Year,
+                        project.StartDate.Value.Month,
+                        project.StartDate.Value.Day,
+                        project.LastActivityDate.Value.Year,
+                        project.LastActivityDate.Value.Month,
+                        project.LastActivityDate.Value.Day);
+
+                    data += dataPoint;
+                }
+                data = data.Remove(data.Length - 1, 1); // chop off last comma.
+            }
+
+            return data;
+        }
     }
 }
