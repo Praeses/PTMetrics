@@ -63,6 +63,16 @@
                                 return Highcharts.dateFormat('%e %b', this.y);
                             }
                         }
+                    },
+                    series: {
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                click: function() {
+                                    alert ('Drilldown into project: '+ this.category);
+                                }
+                            }
+                        }
                     }
                 },
 
