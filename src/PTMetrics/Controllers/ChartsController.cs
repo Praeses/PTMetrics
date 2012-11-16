@@ -16,5 +16,10 @@ namespace PTMetrics.Controllers
             return View();
         }
 
+        public ActionResult ProjectTimeline()
+        {
+            return View();
+        }
+
     }
 }
