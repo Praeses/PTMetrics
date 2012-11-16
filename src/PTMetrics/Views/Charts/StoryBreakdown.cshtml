@@ -14,7 +14,7 @@
     <script type="text/javascript">
         $(function () {
             var chart,
-                data = [
+                drilldata = [
                         {
                             name: 'A',
                             y: 15,
@@ -56,7 +56,9 @@
                         },
             ];
     
-        $(document).ready(function () {
+            $(document).ready(function () {
+
+                $("#pie").bind('click', function () { chart.setChart(true); });
     	
             // Build the chart
             chart = new Highcharts.Chart({
@@ -70,8 +72,19 @@
                     text: 'Project Stories'
                 },
                 tooltip: {
-        	        pointFormat: '{series.name}: <b>{point.percentage}%</b>',
-                    percentageDecimals: 1
+        	       
+        	        formatter: function () {
+        	            var point = this.point,
+                            s = point.name + ':<b>' + this.y + '%</b><br/>';
+        	            if (point.drilldown) {
+        	                s = point.name + ':<b>' + this.y + '</b><br/>';
+        	                s += 'Click to view ' + point.name + ' stories';
+        	            } else {
+        	                s = point.name + ':<b>' + this.y + '</b><br/>';
+        	                s += 'Click reset to return to project breakdown';
+        	            }
+        	            return s;
+        	        }
                 },
                 plotOptions: {
                     pie: {
@@ -97,7 +110,7 @@
                 series: [{
                     type: 'pie',
                     name: 'Stories',
-                    data: data
+                    data: drilldata
                 }]
             }, function (chart) {
 
@@ -118,7 +131,7 @@
                     }
 
                     if (up === false) {
-                        $("#pie").show().bind('click', function () { chart.setChart(true); });
+                        $("#pie").show();
                         up = true;
                     }
 
