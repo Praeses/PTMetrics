@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width" />
         @Styles.Render("~/Content/css")
         @Scripts.Render("~/bundles/modernizr")
+        
     </head>
     <body>
         <header>
@@ -43,6 +44,8 @@
         </footer>
 
         @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/Scripts/Highcharts/highcharts.js")
+        @Scripts.Render("~/Scripts/Highcharts/highcharts-more.js")
         @RenderSection("scripts", required: false)
     </body>
 </html>
