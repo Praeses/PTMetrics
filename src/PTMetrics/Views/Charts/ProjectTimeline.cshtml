@@ -1,4 +1,4 @@
-﻿@model dynamic
+﻿@model PTMetrics.Models.ProjectTimelineVM
 
 @{
     ViewBag.Title = "title";
@@ -29,7 +29,7 @@
 
                 xAxis: {
                     // TODO - ajax pull the project names from the database.
-                    categories: ['CPMS Phase 3', 'OLTS', 'QIS Phase I']
+                    categories: ['CPMS Phase 3', 'OLTS', 'QIS Phase I'] //[@Model.Categories]  
                 },
 
                 yAxis: {

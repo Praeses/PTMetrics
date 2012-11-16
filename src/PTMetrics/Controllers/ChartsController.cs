@@ -6,6 +6,9 @@ using System.Web.Mvc;
 
 namespace PTMetrics.Controllers
 {
+    using PTMetrics.Components.Domain;
+    using PTMetrics.Models;
+
     public class ChartsController : Controller
     {
         //
@@ -18,7 +21,20 @@ namespace PTMetrics.Controllers
 
         public ActionResult ProjectTimeline()
         {
-            return View();
+            var categories = "";
+            using (var db = new PMToolsContext())
+            {
+                var projects = db.Projects.Where(x => x.LastActivityDate != null && x.StartDate != null);
+                foreach (var project in projects)
+                {
+                    categories += "'" + project.Name + "',";
+                }
+                categories = categories.Remove(categories.Length-2, 1);
+            }
+            var vm = new ProjectTimelineVM();
+            vm.Categories = categories;
+
+            return View(vm);
         }
 
         public ActionResult StoryBreakdown()
