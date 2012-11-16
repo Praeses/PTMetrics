@@ -21,5 +21,10 @@ namespace PTMetrics.Controllers
             return View();
         }
 
+        public ActionResult StoryBreakdown()
+        {
+            return View();
+        }
+
     }
 }

@@ -337,6 +337,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Charts\Index.cshtml" />
     <Content Include="Views\Charts\ProjectTimeline.cshtml" />
+    <Content Include="Views\Charts\StoryBreakdown.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
