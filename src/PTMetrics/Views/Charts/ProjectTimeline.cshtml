@@ -2,7 +2,85 @@
 
 @{
     ViewBag.Title = "title";
-    Layout = "_Layout";
 }
 
-<h2>title</h2>
+<h2>Projects Over Time</h2>
+
+<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+
+            window.chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    type: 'columnrange',
+                    inverted: true
+                },
+
+                title: {
+                    text: 'Projects over time'
+                },
+
+                subtitle: {
+                    text: 'From Jan 1, 2012 - Dec 31, 2012'
+                },
+
+                xAxis: {
+                    // TODO - ajax pull the project names from the database.
+                    categories: ['CPMS Phase 3', 'OLTS', 'QIS Phase I']
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'Months'
+                    },
+                    labels: {
+                        formatter: function () {
+                            if (Highcharts.dateFormat('%b', this.value) == "Jan") {
+                                return '<b>' + Highcharts.dateFormat('%b', this.value) + '</b><br><b>' + Highcharts.dateFormat('%Y', this.value) + '</b>';
+                            }
+                            else {
+                                return Highcharts.dateFormat('%b', this.value);
+                            }
+
+                        }
+                    }
+                },
+                
+                tooltip: {
+                    formatter: function () {
+                        return "Tooltip";
+                    }
+                },
+
+                plotOptions: {
+                    columnrange: {
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function() {
+                                return Highcharts.dateFormat('%e %b', this.y);
+                            }
+                        }
+                    }
+                },
+
+                legend: {
+                    enabled: false
+                },
+
+                series: [{
+                    name: 'Date Range',
+                    // TODO: Pull these dates dynamically
+                    data: [
+                        [Date.UTC(2012, 3, 12), Date.UTC(2012, 8, 28)],
+                        [Date.UTC(2012, 6, 11), Date.UTC(2012, 11, 2)],
+                        [Date.UTC(2012, 10, 22), Date.UTC(2012, 11, 15)]
+                    ]
+                }]
+            });
+
+        });
+    </script>
+    }
